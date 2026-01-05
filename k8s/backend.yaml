@@ -30,6 +30,15 @@ spec:
           image: quay.io/fedora/kasper-postgresql-16:latest
           ports:
             - containerPort: 5432
+         
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 400m
+              memory: 512Mi
+          
           env:
             - name: POSTGRESQL_USER
               valueFrom:
@@ -97,6 +106,15 @@ spec:
           image: quay.io/kurs/kasper-redis:latest
           ports:
             - containerPort: 6379
+       
+        resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 400m
+              memory: 512Mi
+          
           env:
             - name: REDIS_PASSWORD
               valueFrom:
@@ -143,6 +161,15 @@ spec:
           image: quay.io/hardo314/golang-kasper-backend:latest
           ports:
             - containerPort: 8080
+         
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 400m
+              memory: 512Mi
+            
           env:
             - name: DB_HOST
               valueFrom:
