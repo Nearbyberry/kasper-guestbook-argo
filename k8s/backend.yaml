@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
         - name: kasper-postgres
-          image: quay.io/fedora/kasper-postgresql-16:latest
+          image: quay.io/fedora/postgresql-16:latest
           ports:
             - containerPort: 5432
          
@@ -57,7 +57,7 @@ spec:
                   key: db-name
           volumeMounts:
             - name: kasper-postgres-data
-              mountPath: /var/lib/kasper-postgresql
+              mountPath: /var/lib/postgresql
       volumes:
         - name: kasper-postgres-data
           persistentVolumeClaim:
@@ -103,7 +103,7 @@ spec:
     spec:
       containers:
         - name: kasper-redis
-          image: quay.io/kurs/kasper-redis:latest
+          image: quay.io/kurs/redis:latest
           ports:
             - containerPort: 6379
        
@@ -123,7 +123,7 @@ spec:
                   key: password
           volumeMounts:
             - name: kasper-redis-data
-              mountPath: /var/lib/kasper-redis/data
+              mountPath: /var/lib/redis/data
       volumes:
         - name: kasper-redis-data
           persistentVolumeClaim:
@@ -158,7 +158,7 @@ spec:
     spec:
       containers:
         - name: kasper-backend
-          image: quay.io/hardo314/golang-kasper-backend:latest
+          image: ghcr.io/nearbyberry/guestbook:latest
           ports:
             - containerPort: 8080
          
