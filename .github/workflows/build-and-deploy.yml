@@ -21,17 +21,17 @@ jobs:
 
     - name: Build app container
       run: |
-        docker build -f backend/Containerfile -t ghcr.io/billare/guestbook:latest ./backend
+        docker build -f backend/Containerfile -t ghcr.io/nearbyberry/guestbook:latest ./backend
         
 
    
-    - name: Build redis container
+    - name: Build frontend container
       run: |
-        docker build -f frontend/Containerfile -t ghcr.io/billare/redis:latest ./frontend
+        docker build -f frontend/Containerfile -t ghcr.io/nearbyberry/frontend:latest ./frontend
         
 
     - name: Push containers
       run: |
-        docker push ghcr.io/billare/guestbook:latest
-        docker push ghcr.io/billare/redis:latest
+        docker push ghcr.io/nearbyberry/guestbook:latest
+        docker push ghcr.io/nearbyberry/frontend:latest
 
