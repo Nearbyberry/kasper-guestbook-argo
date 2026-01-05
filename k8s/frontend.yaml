@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: kasper-frontend
-          image: ghcr.io/billare/guestbook-kasper-frontend:latest   #
+          image: ghcr.io/nearbyberry/frontend:latest   
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
