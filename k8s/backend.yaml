@@ -119,7 +119,7 @@ spec:
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: kasper-redis-password
+                  name: redis-password
                   key: password
           volumeMounts:
             - name: kasper-redis-data
@@ -181,16 +181,16 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   name: kasper-db-config
-                  key: kasper-redis-host
+                  key: redis-host
             - name: REDIS_PORT
               valueFrom:
                 configMapKeyRef:
                   name: kasper-db-config
-                  key: kasper-redis-port
+                  key: redis-port
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: kasper-redis-password
+                  name: redis-password
                   key: password
 ---
 apiVersion: v1
