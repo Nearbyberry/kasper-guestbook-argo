@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: kasper-db-config
 data:
-  kasper-db-name: guestbook
-  kasper-db-host: postgres
+  db-name: guestbook
+  db-host: postgres
   redis-host: redis
   redis-port: "6379"
