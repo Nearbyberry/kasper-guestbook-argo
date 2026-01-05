@@ -4,6 +4,6 @@ metadata:
   name: kasper-db-config
 data:
   db-name: guestbook
-  db-host: postgres
-  redis-host: redis
+  db-host: kasper-postgres
+  redis-host: kasper-redis
   redis-port: "6379"
