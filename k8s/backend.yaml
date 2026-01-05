@@ -159,6 +159,7 @@ spec:
       containers:
         - name: kasper-backend
           image: ghcr.io/nearbyberry/guestbook:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
          
