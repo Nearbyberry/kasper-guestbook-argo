@@ -107,7 +107,7 @@ spec:
           ports:
             - containerPort: 6379
        
-        resources:
+          resources:
             requests:
               cpu: 100m
               memory: 256Mi
