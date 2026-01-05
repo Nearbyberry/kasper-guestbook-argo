@@ -1,0 +1,177 @@
+# PostgreSQL
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kasper-postgres-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: lvms-vg1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kasper-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kasper-postgres
+  template:
+    metadata:
+      labels:
+        app: kasper-postgres
+    spec:
+      containers:
+        - name: kasper-postgres
+          image: quay.io/fedora/kasper-postgresql-16:latest
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRESQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: kasper-db-password
+                  key: username
+            - name: POSTGRESQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kasper-db-password
+                  key: password
+            - name: POSTGRESQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: kasper-db-config
+                  key: db-name
+          volumeMounts:
+            - name: kasper-postgres-data
+              mountPath: /var/lib/kasper-postgresql
+      volumes:
+        - name: kasper-postgres-data
+          persistentVolumeClaim:
+            claimName: kasper-postgres-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kasper-postgres
+spec:
+  type: ClusterIP
+  selector:
+    app: kasper-postgres
+  ports:
+    - port: 5432
+---
+# Redis
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kasper-redis-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: lvms-vg1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kasper-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kasper-redis
+  template:
+    metadata:
+      labels:
+        app: kasper-redis
+    spec:
+      containers:
+        - name: kasper-redis
+          image: quay.io/kurs/kasper-redis:latest
+          ports:
+            - containerPort: 6379
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kasper-redis-password
+                  key: password
+          volumeMounts:
+            - name: kasper-redis-data
+              mountPath: /var/lib/kasper-redis/data
+      volumes:
+        - name: kasper-redis-data
+          persistentVolumeClaim:
+            claimName: kasper-redis-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kasper-redis
+spec:
+  type: ClusterIP
+  selector:
+    app: kasper-redis
+  ports:
+    - port: 6379
+
+# Golang Backend
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kasper-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: kasper-backend
+  template:
+    metadata:
+      labels:
+        app: kasper-backend
+    spec:
+      containers:
+        - name: kasper-backend
+          image: quay.io/hardo314/golang-kasper-backend:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: kasper-db-config
+                  key: db-host
+            - name: REDIS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: kasper-db-config
+                  key: kasper-redis-host
+            - name: REDIS_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: kasper-db-config
+                  key: kasper-redis-port
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kasper-redis-password
+                  key: password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kasper-backend
+spec:
+  type: ClusterIP
+  selector:
+    app: kasper-backend
+  ports:
+    - port: 8080
